@@ -1,12 +1,8 @@
 import { nanoid } from 'nanoid';
 import fs from 'fs/promises';
 import path from 'path';
-import { fileURLToPath } from 'url';
-import { dirname } from 'path';
 
-const __filename = fileURLToPath(import.meta.url);
-const __dirname = dirname(__filename);
-const contactsPath = path.join(__dirname, 'db', 'contacts.json');
+const contactsPath = path.resolve('db', 'contacts.json');
 
 async function listContacts() {
   const contactsText = await fs.readFile(contactsPath);
@@ -14,8 +10,9 @@ async function listContacts() {
 }
 
 async function getContactById(contactId) {
+  const id = String(contactId);
   const contacts = await listContacts();
-  const contactById = contacts.find(contact => contact.id === contactId);
+  const contactById = contacts.find(contact => contact.id === id);
   return contactById || null;
 }
 
@@ -28,8 +25,9 @@ async function addContact(name, email, phone) {
 }
 
 async function removeContact(contactId) {
+  const id = String(contactId);
   const contacts = await listContacts();
-  const index = contacts.findIndex(contact => contact.id === contactId);
+  const index = contacts.findIndex(contact => contact.id === id);
   if (index !== -1) {
     const [result] = contacts.splice(index, 1);
     await fs.writeFile(contactsPath, JSON.stringify(contacts, null, 2));
