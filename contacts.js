@@ -1,8 +1,12 @@
 import { nanoid } from 'nanoid';
 import fs from 'fs/promises';
 import path from 'path';
+import { fileURLToPath } from 'url';
+import { dirname } from 'path';
 
-const contactsPath = path.resolve('db', 'contacts.json');
+const __filename = fileURLToPath(import.meta.url);
+const __dirname = dirname(__filename);
+const contactsPath = path.join(__dirname, 'db', 'contacts.json');
 
 async function listContacts() {
   const contactsText = await fs.readFile(contactsPath);
@@ -31,7 +35,7 @@ async function removeContact(contactId) {
   if (index !== -1) {
     const [result] = contacts.splice(index, 1);
     await fs.writeFile(contactsPath, JSON.stringify(contacts, null, 2));
-    return [result];
+    return result;
   } else {
     return null;
   }
